@@ -6,7 +6,12 @@ import java.util.Date;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-    	Object[] inputs = input();
+    	if (args.length != 2){
+    		System.err.println("usage: java Main <input file> <log file>");
+    	}
+    	String inputF = args[0];
+    	String logF = args[1];
+    	Object[] inputs = input(inputF);
     	ArrayList<ArrayList<String>> persons = (ArrayList<ArrayList<String>>)inputs[0];
     	ArrayList<ArrayList<String>> pictures = (ArrayList<ArrayList<String>>)inputs[1];
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -16,27 +21,27 @@ public class Main {
     	while (! ifQuit){
     		instruc();
     		userIn = br.readLine();
-    		logging(userIn);
+    		logging(userIn, logF);
     		if (userIn.equals("Q")||userIn.equals("q")){
     			System.out.println("good bye");
     			ifQuit = true;
     		}
     		else if(userIn.equals("1")){
-    			picWinner(pictures);
+    			picWinner(pictures, logF);
     		}else if(userIn.equals("2")){
-    			picNom(pictures);
+    			picNom(pictures, logF);
     		}else if(userIn.equals("3")){
-    			actNom(persons);
+    			actNom(persons, logF);
     		}else{
     			System.out.println("That is not a valid selection.\n");
     		}
     	}
     }
     
-    public static void logging(String userIn){
+    public static void logging(String userIn, String logF){
    	 	java.util.Date date= new java.util.Date();
     	try {
-    	    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("log.txt", true)));
+    	    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(logF, true)));
     	    out.println(new Timestamp(date.getTime()));
     	    out.println(userIn);
     	    out.close();
@@ -53,13 +58,13 @@ public class Main {
     		"Q: Quit");
     }
     
-    public static void picWinner(ArrayList<ArrayList<String>> pictures) throws IOException {
+    public static void picWinner(ArrayList<ArrayList<String>> pictures, String logF) throws IOException {
     	boolean valid = false;
         while (!valid){
         	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         	System.out.print("Please enter the year: ");
         	String userIn = br.readLine();	
-        	logging(userIn);
+        	logging(userIn, logF);
         	Iterator<ArrayList<String>> iter = pictures.iterator();
         	while (iter.hasNext()){
         		ArrayList<String> curr = iter.next();
@@ -75,13 +80,13 @@ public class Main {
         }
     }
 
-    public static void picNom(ArrayList<ArrayList<String>> pictures) throws IOException {
+    public static void picNom(ArrayList<ArrayList<String>> pictures, String logF) throws IOException {
     	boolean valid = false;
         while (!valid){
         	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         	System.out.print("Please enter the year: ");
         	String userIn = br.readLine();
-        	logging(userIn);
+        	logging(userIn, logF);
         	Iterator<ArrayList<String>> iter = pictures.iterator();
         	while (iter.hasNext()){
         		ArrayList<String> curr = iter.next();
@@ -98,13 +103,13 @@ public class Main {
         }
     }
 
-    public static void actNom(ArrayList<ArrayList<String>> persons) throws IOException {
+    public static void actNom(ArrayList<ArrayList<String>> persons, String logF) throws IOException {
         boolean valid = false;
         while (!valid){
         	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         	System.out.print("Please enter all or part of the person's name: ");
         	String userIn = br.readLine();
-        	logging(userIn);
+        	logging(userIn, logF);
         	Iterator<ArrayList<String>> iter = persons.iterator();
         	while (iter.hasNext()){
         		ArrayList<String> curr = iter.next();
@@ -127,54 +132,54 @@ public class Main {
         }
     }
     
-    public static Object[] input() throws IOException{
-        BufferedReader inputStream = null;
-        ArrayList<ArrayList<String>> persons = new ArrayList<ArrayList<String>>();
-        ArrayList<ArrayList<String>> pictures = new ArrayList<ArrayList<String>>();
-        Object[] toReturn = {persons, pictures};	//casting   
-        try {
-            inputStream = 
-                new BufferedReader(new FileReader("oscars.csv"));
-            String l;
-            while ((l = inputStream.readLine()) != null) {
-                if (l.indexOf("Actor --") != -1){
-                    ArrayList<String> value = new ArrayList<String>();
-                	String delims = "[,]";
-                	String[] tokens = l.split(delims);
-                	value.add(tokens[0]);
-                	value.add(tokens[1]);
-                	value.add(tokens[2]);
-                	value.add(tokens[3]);
-                	persons.add(value);
-                }
-                if (l.indexOf("Actress --") != -1){
-                    ArrayList<String> value = new ArrayList<String>();
-                	String delims = "[,]";
-                	String[] tokens = l.split(delims);
-                	value.add(tokens[0]);
-                	value.add(tokens[1]);
-                	value.add(tokens[2]);
-                	value.add(tokens[3]);
-                	persons.add(value);
-                }
-                if (l.indexOf("Best Picture") != -1){
-                    ArrayList<String> value = new ArrayList<String>();
-                	String delims = "[,]";
-                	String[] tokens = l.split(delims);
-                	String year = tokens[0].substring(0,4);
-                	value.add(year);
-                	value.add(tokens[1]);
-                	value.add(tokens[2]);
-                	value.add(tokens[3]);
-                	pictures.add(value);                	
-                }
-            }
-        } finally {
-            if (inputStream != null) {
-                inputStream.close();
-            }
-        }
-        return toReturn;
+    public static Object[] input(String inputF) throws IOException{
+    	BufferedReader inputStream = null;
+    	ArrayList<ArrayList<String>> persons = new ArrayList<ArrayList<String>>();
+    	ArrayList<ArrayList<String>> pictures = new ArrayList<ArrayList<String>>();
+    	Object[] toReturn = {persons, pictures};	//casting   
+    	try {
+    		inputStream = new BufferedReader(new FileReader(inputF));
+    	} catch (IOException e) {
+    		System.err.println("openning input file failed");
+    	}
+    	String l;
+    	while ((l = inputStream.readLine()) != null) {
+    		if (l.indexOf("Actor --") != -1){
+    			ArrayList<String> value = new ArrayList<String>();
+    			String delims = "[,]";
+    			String[] tokens = l.split(delims);
+    			value.add(tokens[0]);
+    			value.add(tokens[1]);
+    			value.add(tokens[2]);
+    			value.add(tokens[3]);
+    			persons.add(value);
+    		}
+    		if (l.indexOf("Actress --") != -1){
+    			ArrayList<String> value = new ArrayList<String>();
+    			String delims = "[,]";
+    			String[] tokens = l.split(delims);
+    			value.add(tokens[0]);
+    			value.add(tokens[1]);
+    			value.add(tokens[2]);
+    			value.add(tokens[3]);
+    			persons.add(value);
+    		}
+    		if (l.indexOf("Best Picture") != -1){
+    			ArrayList<String> value = new ArrayList<String>();
+    			String delims = "[,]";
+    			String[] tokens = l.split(delims);
+    			String year = tokens[0].substring(0,4);
+    			value.add(year);
+    			value.add(tokens[1]);
+    			value.add(tokens[2]);
+    			value.add(tokens[3]);
+    			pictures.add(value);                	
+    		}
+    	}
+    	if (inputStream != null) {
+    		inputStream.close();
+    	}
+    	return toReturn;
     }
 }
 
