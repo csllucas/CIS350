@@ -1,0 +1,73 @@
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.BufferedReader;
+import java.io.PrintWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Set;
+
+
+public class Main {
+    public static void main(String[] args) throws IOException {
+    	Hashtable[] inputs = input();
+    	Hashtable persons = inputs[0];
+    	Hashtable pictures = inputs[1];
+    	System.out.println("size: "+persons.size());
+    	System.out.println(persons.get("James Franco"));
+    	System.out.println(persons.get("Jennifer Lawrence"));
+    }
+    
+    public static Hashtable[] input() throws IOException{
+        BufferedReader inputStream = null;
+        Hashtable<String, List> persons = new Hashtable();
+        Hashtable pictures = new Hashtable();
+        Hashtable[] toReturn = {persons, pictures};
+        
+        try {
+            inputStream = 
+                new BufferedReader(new FileReader("oscars.csv"));
+            String l;
+            while ((l = inputStream.readLine()) != null) {
+                if (l.indexOf("Actor --") != -1){
+                    ArrayList<String> value = new ArrayList<String>();
+                	String delims = "[,]";
+                	String[] tokens = l.split(delims);
+                	value.add(tokens[0]);
+                	value.add(tokens[1]);
+                	value.add(tokens[3]);
+                	persons.put(tokens[2],value);
+                }
+                if (l.indexOf("Actress --") != -1){
+                    ArrayList<String> value = new ArrayList<String>();
+                	String delims = "[,]";
+                	String[] tokens = l.split(delims);
+                	value.add(tokens[0]);
+                	value.add(tokens[1]);
+                	value.add(tokens[3]);
+                	persons.put(tokens[2],value);
+                }
+                if (l.indexOf("Best Picture") != -1){
+                    ArrayList<String> value = new ArrayList<String>();
+                	String delims = "[,]";
+                	String[] tokens = l.split(delims);
+                	value.add(tokens[1]);
+                	value.add(tokens[2]);
+                	value.add(tokens[3]);
+                	persons.put(tokens[0],value);                	
+                }
+            }
+        } finally {
+            if (inputStream != null) {
+                inputStream.close();
+            }
+        }
+        return toReturn;
+    }
+
+}
+
+
+

@@ -1,0 +1,106 @@
+import java.io.Console;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.BufferedReader;
+import java.io.PrintWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Set;
+
+
+public class Main {
+    public static void main(String[] args) throws IOException {
+    	ArrayList[] inputs = input();
+    	ArrayList persons = inputs[0];
+    	ArrayList pictures = inputs[1];
+    	System.out.println("size: "+persons.size());
+    	Console c = System.console();
+        if (c == null) {
+            System.err.println("No console.");
+            System.exit(1);
+        }
+		String userIn;
+
+    	/*for (int i=0; i<persons.size();i++){
+    		if (persons.get(i).get(2) == "Javier Bardem"){
+    			System.out.println(persons.get(i));
+    		}
+    			
+    	}*/
+    	System.out.println("Welcome to the Oscars database!\n");
+    	boolean ifQuit = false;
+    	while (! ifQuit){
+    		instruc();
+    		userIn = c.readLine("> ");
+    		System.out.println(userIn);
+    		ifQuit = true;
+    	}
+
+    }
+    
+    public static void instruc(){
+    	System.out.println("Please make your selection:\n"+
+    		"1: Search for best picture award winner by year\n"+
+    		"2: Search for best picture award nominees by year\n"+
+    		"3: Search for actor/actress nominations by name\n"+
+    		"Q: Quit");
+    }
+    
+    public static ArrayList[] input() throws IOException{
+        BufferedReader inputStream = null;
+        ArrayList persons = new ArrayList();
+        ArrayList pictures = new ArrayList();
+        ArrayList[] toReturn = {persons, pictures};
+        
+        try {
+            inputStream = 
+                new BufferedReader(new FileReader("oscars.csv"));
+            String l;
+            while ((l = inputStream.readLine()) != null) {
+                if (l.indexOf("Actor --") != -1){
+                    ArrayList<String> value = new ArrayList<String>();
+                	String delims = "[,]";
+                	String[] tokens = l.split(delims);
+                	value.add(tokens[0]);
+                	value.add(tokens[1]);
+                	value.add(tokens[2]);
+                	value.add(tokens[3]);
+                	persons.add(value);
+                }
+                if (l.indexOf("Actress --") != -1){
+                    ArrayList<String> value = new ArrayList<String>();
+                	String delims = "[,]";
+                	String[] tokens = l.split(delims);
+                	value.add(tokens[0]);
+                	value.add(tokens[1]);
+                	value.add(tokens[2]);
+                	value.add(tokens[3]);
+                	persons.add(value);
+                }
+                if (l.indexOf("Best Picture") != -1){
+                    ArrayList<String> value = new ArrayList<String>();
+                	String delims = "[,]";
+                	String[] tokens = l.split(delims);
+                	String year = tokens[0].substring(0,3);
+                	value.add(year);
+                	value.add(tokens[1]);
+                	value.add(tokens[2]);
+                	value.add(tokens[3]);
+                	pictures.add(value);                	
+                }
+            }
+        } finally {
+            if (inputStream != null) {
+                inputStream.close();
+            }
+        }
+        return toReturn;
+    }
+
+}
+
+
+
